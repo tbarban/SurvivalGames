@@ -7,10 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.mcsg.survivalgames.SettingsManager;
 
 
 
@@ -101,14 +98,19 @@ public class DatabaseManager {
 
     public boolean connect()
     {
-        //log.info("Connecting to database...");
-        FileConfiguration c = SettingsManager.getInstance().getConfig();
-        String host =  c.getString("sql.host", "localhost");
-        int port    =  c.getInt("sql.port",  3306);
-        String db   =  c.getString("sql.database", "SurvivalGames");
-        String user =  c.getString("sql.user", "root");
-        String pass =  c.getString("sql.pass",  "");
-        return this.connectToDB(host, port, db, user,pass);
+        log.info("Connecting to database...");
+        //FileConfiguration c = SettingsManager.getInstance().getConfig();
+        //String host =  c.getString("sql.host", "localhost");
+        //int port    =  c.getInt("sql.port",  3306);
+        //String db   =  c.getString("sql.database", "SurvivalGames");
+        //String user =  c.getString("sql.user", "root");
+        //String pass =  c.getString("sql.pass",  "");
+        String host = "localhost";
+        int port = 3306;
+        String db = "dhg_sg";
+        String user = "districthg";
+        String pass = "Spu3thEZpRhmyE5q";
+        return this.connectToDB(host, port, db, user, pass);
     }
 
 }

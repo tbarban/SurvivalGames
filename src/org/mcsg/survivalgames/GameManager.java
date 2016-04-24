@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -17,15 +16,12 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import org.mcsg.survivalgames.Game.GameMode;
 import org.mcsg.survivalgames.MessageManager.PrefixType;
-import org.mcsg.survivalgames.api.PlayerLeaveArenaEvent;
-import org.mcsg.survivalgames.logging.QueueManager;
 import org.mcsg.survivalgames.stats.StatsManager;
 import org.mcsg.survivalgames.util.Kit;
 
@@ -231,7 +227,6 @@ public class GameManager {
 		kitsel.add(p);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void selectKit(Player p, int i) {
 		p.getInventory().clear();
 		ArrayList<Kit>kits = getKits(p);

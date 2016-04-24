@@ -20,7 +20,6 @@ import org.mcsg.survivalgames.logging.LoggingManager;
 import org.mcsg.survivalgames.logging.QueueManager;
 import org.mcsg.survivalgames.stats.StatsManager;
 import org.mcsg.survivalgames.util.ChestRatioStorage;
-import org.mcsg.survivalgames.util.ChestRatioStorageOLD;
 import org.mcsg.survivalgames.util.DatabaseManager;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
@@ -36,7 +35,7 @@ public class SurvivalGames extends JavaPlugin {
 	public static List < String > auth = Arrays.asList(new String[] {
 			"Double0negative", "iMalo", "Medic0987", "alex_markey", "skitscape", "AntVenom", "YoshiGenius", "pimpinpsp", "WinryR", "Jazed2011",
 			"KiwiPantz", "blackracoon", "CuppingCakes", "4rr0ws", "Fawdz", "Timothy13", "rich91", "ModernPrestige", "Snowpool", "egoshk", 
-			"nickm140",  "chaseoes", "Oceangrass", "GrailMore", "iAngelic", "Lexonia", "ChaskyT", "Anon232", "IngeniousGamer", "ThunderGemios10", "sshipway" // List of Contributors
+			"nickm140",  "chaseoes", "Oceangrass", "GrailMore", "iAngelic", "Lexonia", "ChaskyT", "Anon232", "IngeniousGamer", "ThunderGemios10", "sshipway", "Barbs" // List of Contributors
 	});
 
 	SurvivalGames p = this;
@@ -89,6 +88,7 @@ public class SurvivalGames extends JavaPlugin {
 				QueueManager.getInstance().setup();
 				StatsManager.getInstance().setup(p, c.getBoolean("stats.enabled"));
 				dbcon = true;
+				logger.info("Connection to database successful.");
 			} catch (Exception e) {
 				dbcon = false;
 				e.printStackTrace();

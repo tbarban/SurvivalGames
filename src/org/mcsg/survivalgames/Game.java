@@ -3,14 +3,10 @@ package org.mcsg.survivalgames;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
@@ -34,10 +30,8 @@ import org.mcsg.survivalgames.stats.StatsManager;
 import org.mcsg.survivalgames.util.ItemReader;
 import org.mcsg.survivalgames.util.Kit;
 
-import com.sk89q.wepif.PluginPermissionsResolver;
 
 import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 
 
@@ -528,6 +522,7 @@ public class Game {
 	 * 
 	 */
 
+	@SuppressWarnings("unused")
 	public void removePlayer(Player p, boolean b) {
 		p.teleport(SettingsManager.getInstance().getLobbySpawn());
 		///$("Teleporting to lobby");
@@ -566,6 +561,7 @@ public class Game {
 	 * 
 	 * 
 	 */
+	@SuppressWarnings("deprecation")
 	public void killPlayer(Player p, boolean left) {
 		try{
 			clearInv(p);
@@ -681,12 +677,6 @@ public class Game {
 		Player win = activePlayers.get(0);
 		// clearInv(p);
 		
-		
-		/*EconomyResponse r = econ.depositPlayer(win, getWinAmount(activePlayers, inactivePlayers));
-		if (r.transactionSuccess()) {
-			win.sendMessage(PrefixType.INFO + " You've been awarded $" + (int)getWinAmount(activePlayers, inactivePlayers) + " for winning the Survival Games!");	
-		}*/
-		
 		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
 		String command = "eco give " + win.getName() + " " + (int)getWinAmount(activePlayers, inactivePlayers);
 		Bukkit.dispatchCommand(console, command);
@@ -712,6 +702,8 @@ public class Game {
 
 		sm.playerWin(win, gameID, new Date().getTime() - startTime);
 		sm.saveGame(gameID, win, getActivePlayers() + getInactivePlayers(), new Date().getTime() - startTime);
+		
+		sm.updateStats();
 
 		activePlayers.clear();
 		inactivePlayers.clear();
@@ -901,7 +893,6 @@ public class Game {
 		return nextspec;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void restoreInv(Player p) {
 		try {
 			clearInv(p);
@@ -909,11 +900,10 @@ public class Game {
 			p.getInventory().setArmorContents(inv_store.get(p)[1]);
 			inv_store.remove(p);
 			p.updateInventory();
-		} catch (Exception e) { /*p.sendMessage(ChatColor.RED+"Inentory failed to restore or nothing was in it.");*/
+		} catch (Exception e) { /*p.sendMessage(ChatColor.RED+"Inventory failed to restore or nothing was in it.");*/
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void clearInv(Player p) {
 		ItemStack[] inv = p.getInventory().getContents();
 		for (int i = 0; i < inv.length; i++) {
