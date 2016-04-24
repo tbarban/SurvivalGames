@@ -2,14 +2,11 @@ package org.mcsg.survivalgames.commands;
 
 import java.util.HashSet;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import org.mcsg.survivalgames.GameManager;
-import org.mcsg.survivalgames.SurvivalGames;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -43,6 +40,7 @@ public class Test implements SubCommand{
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public Location getYLocation(World w, int x, int y, int z){
 		Location l = new Location(w,x,y,z);
 		while(l.getBlock().getTypeId() == 0){

@@ -18,6 +18,7 @@ public class DeathEvent implements Listener {
 	
 
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDieEvent(EntityDamageEvent event) {
 		if(event.getEntity() instanceof Player){}

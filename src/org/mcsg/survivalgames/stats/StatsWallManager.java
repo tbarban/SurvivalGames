@@ -23,7 +23,8 @@ public class StatsWallManager {
     //TODO: Possibly clean up
     Sign[][] signs;
     SurvivalGames p;
-    private int runningThread = 0;
+    @SuppressWarnings("unused")
+	private int runningThread = 0;
     private static StatsWallManager instance = new StatsWallManager();
     private StatsWallManager(){
 
@@ -41,7 +42,8 @@ public class StatsWallManager {
     }
 
 
-    public void loadSigns(){
+    @SuppressWarnings("deprecation")
+	public void loadSigns(){
 
         FileConfiguration c = SettingsManager.getInstance().getSystemConfig();
         try{
@@ -158,7 +160,7 @@ public class StatsWallManager {
     
     class StatsSignUpdater extends Thread{
         public void run(){
-            int trun = runningThread;
+           // int trun = runningThread;
 
            /* while(SurvivalGames.isActive() && trun == runningThread){
                 try{

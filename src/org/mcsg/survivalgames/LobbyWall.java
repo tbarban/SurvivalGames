@@ -23,7 +23,8 @@ public class LobbyWall {
         gameid = gid;
     }
 
-    public boolean loadSign(World w, int x1, int x2, int z1, int z2, int y1) {
+    @SuppressWarnings("deprecation")
+	public boolean loadSign(World w, int x1, int x2, int z1, int z2, int y1) {
         boolean usingx = (x1 == x2) ? false : true;
         SurvivalGames.debug(w + " " + x1 + " " + x2 + " " + z1 + " " + z2 + " " + y1 + " " + usingx);
         int dir = new Location(w, x1, y1, z1).getBlock().getData();

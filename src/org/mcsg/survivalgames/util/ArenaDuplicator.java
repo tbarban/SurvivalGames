@@ -86,7 +86,8 @@ public class ArenaDuplicator {
 
         }
 
-        public void run(){
+        @SuppressWarnings("deprecation")
+		public void run(){
             Location l1;
             Location l2;
             Bukkit.getServer().broadcastMessage("Starting "+id);

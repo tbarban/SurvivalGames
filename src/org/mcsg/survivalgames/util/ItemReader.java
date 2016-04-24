@@ -39,6 +39,7 @@ public class ItemReader {
 	
 	
 	
+	@SuppressWarnings("deprecation")
 	public static ItemStack read(String str){
 		int itemid = 0;
 		if(encids == null){

@@ -1,8 +1,6 @@
 package org.mcsg.survivalgames.events;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Material;
@@ -30,7 +28,8 @@ public class ChestReplaceEvent implements Listener{
 
 	private Random rand = new Random();
 	
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void ChestListener(PlayerInteractEvent e){
     	if(e.getAction() == Action.RIGHT_CLICK_BLOCK){
     		Block blk = e.getClickedBlock();

@@ -40,7 +40,8 @@ public class LobbyManagerOld implements Listener {
         loadSigns();
     }
 
-    public void loadSigns() {
+    @SuppressWarnings("deprecation")
+	public void loadSigns() {
 
         FileConfiguration c = SettingsManager.getInstance().getSystemConfig();
         try {

@@ -204,6 +204,7 @@ public class LoggingManager implements  Listener{
 	}
 */
 
+	@SuppressWarnings("deprecation")
 	public void logBlockCreated(Block b){
 		if(GameManager.getInstance().getBlockGameId(b.getLocation()) == -1)
 			return;
@@ -226,6 +227,7 @@ public class LoggingManager implements  Listener{
 	}
 
 
+	@SuppressWarnings("deprecation")
 	public void logBlockDestoryed(Block b){
 		if(GameManager.getInstance().getBlockGameId(b.getLocation()) == -1)
 			return;

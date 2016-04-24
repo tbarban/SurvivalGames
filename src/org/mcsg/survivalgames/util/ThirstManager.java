@@ -47,6 +47,7 @@ public class ThirstManager implements Listener {
 		p.setLevel(30);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerDrinkWater(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {

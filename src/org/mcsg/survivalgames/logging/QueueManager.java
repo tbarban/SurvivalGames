@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 
 import org.bukkit.Bukkit;
@@ -102,6 +101,7 @@ public class QueueManager {
 			this.id = id;
 		}
 
+		@SuppressWarnings("deprecation")
 		public void run(){
 			ArrayList<Entity>removelist = new ArrayList<Entity>();
 			ArrayList<String> keeplist =  new ArrayList<String>();
@@ -245,6 +245,7 @@ public class QueueManager {
 			this.shutdown = shutdown;
 		}
 
+		@SuppressWarnings("deprecation")
 		public void run(){
 
 			ArrayList<BlockData>data = queue.get(id);

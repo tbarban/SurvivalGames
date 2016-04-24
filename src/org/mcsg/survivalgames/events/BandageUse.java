@@ -3,15 +3,14 @@ package org.mcsg.survivalgames.events;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mcsg.survivalgames.SurvivalGames;
 
 public class BandageUse implements Listener {
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onBandageUse(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
