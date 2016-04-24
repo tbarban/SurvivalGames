@@ -3,9 +3,15 @@ package org.mcsg.survivalgames;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -29,6 +35,9 @@ import org.mcsg.survivalgames.util.ItemReader;
 import org.mcsg.survivalgames.util.Kit;
 
 import com.sk89q.wepif.PluginPermissionsResolver;
+
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 
 
@@ -658,11 +667,35 @@ public class Game {
 	 * 
 	 * 
 	 */
+	
+	public Economy econ;
+	
+	public double getWinAmount(ArrayList<Player> alive, ArrayList<Player> dead) {
+		int totalPlayers = alive.size() + dead.size();
+		double reward = 10 * totalPlayers;
+		return reward;
+	}
+	
 	public void playerWin(Player p) {
 		if (GameMode.DISABLED == mode) return;
 		Player win = activePlayers.get(0);
 		// clearInv(p);
+		
+		
+		/*EconomyResponse r = econ.depositPlayer(win, getWinAmount(activePlayers, inactivePlayers));
+		if (r.transactionSuccess()) {
+			win.sendMessage(PrefixType.INFO + " You've been awarded $" + (int)getWinAmount(activePlayers, inactivePlayers) + " for winning the Survival Games!");	
+		}*/
+		
+		ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+		String command = "eco give " + win.getName() + " " + (int)getWinAmount(activePlayers, inactivePlayers);
+		Bukkit.dispatchCommand(console, command);
+		
+		win.sendMessage(ChatColor.GOLD + "[" + ChatColor.DARK_RED + ChatColor.BOLD + "SG" + ChatColor.GOLD + "] You've been awarded $" + (int)getWinAmount(activePlayers, inactivePlayers) + " for winning the Survival Games!");	
+	
+		
 		win.teleport(SettingsManager.getInstance().getLobbySpawn());
+		
 		restoreInv(win);
 		msgmgr.broadcastFMessage(PrefixType.INFO, "game.playerwin","arena-"+gameID, "victim-"+p.getName(), "player-"+win.getName());
 		LobbyManager.getInstance().display(new String[] {
