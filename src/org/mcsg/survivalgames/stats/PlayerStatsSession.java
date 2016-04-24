@@ -12,6 +12,7 @@ import org.mcsg.survivalgames.SettingsManager;
 
 
 
+
 public class PlayerStatsSession {
 
 
@@ -127,10 +128,41 @@ public class PlayerStatsSession {
         kslevel = 0;
         return false;
     }
+    
+    public int getPosition() {
+    	return position;
+    }
 
+    public int getPoints() {
+    	return points;
+    }
+    
+    public String getPlayerName() {
+    	return player.getName();
+    }
+    
+    public int getArenaID() {
+    	return arenaid;
+    }
+    
+    public int getGameNum() {
+    	return gameno;
+    }
+    
+    public int getKills() {
+    	return kills;
+    }
+    
+    public int getDeaths() {
+    	return death;
+    }
+   
+    
 
     public String createQuery(){
         calcPoints();
+        
+        
         String query= "INSERT INTO "+SettingsManager.getSqlPrefix()+"playerstats VALUES(NULL,";
         query = query + gameno+","+/*SettingsManager.getInstance().getConfig().getString("sql.server-prefix")+*/arenaid+",'"+player.getName()+"',"+points+","+position+","+kills+","+death+",";
         String killeds = "'";

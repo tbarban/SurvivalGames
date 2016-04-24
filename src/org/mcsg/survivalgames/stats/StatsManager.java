@@ -46,7 +46,27 @@ public class StatsManager {
     }
 
     public void setup(Plugin p, boolean b){
-        enabled = b;
+    	enabled = b;
+    	String playerQuery = "CREATE TABLE sg_playerstats(id int NOT NULL AUTO_INCREMENT PRIMARY KEY, player text, points int, wins int, kills int, death int)";
+    	if (b) {
+    		try {
+    			PreparedStatement setup = dbman.createStatement(playerQuery);
+    			
+    			DatabaseMetaData dbm = dbman.getMysqlConnection().getMetaData();
+    			ResultSet tables = dbm.getTables(null, null, "sg_playerstats", null);
+    			
+    			if (!tables.next()) {
+    				setup.execute();
+    			}
+	    	} catch (Exception except) {
+	    		except.printStackTrace();
+	    	}
+    	}
+    }
+    	
+    	
+    	
+      /*  enabled = b;
         if(b){
             try{
                 PreparedStatement s = dbman.createStatement(" CREATE TABLE "+SettingsManager.getSqlPrefix() + 
@@ -71,8 +91,8 @@ public class StatsManager {
                 }
             }catch(Exception e){e.printStackTrace();}
 
-        }
-    }
+        }*/
+    
 
     public void addArena(int arenaid){
         arenas.put(arenaid, new HashMap<Player, PlayerStatsSession>());
@@ -101,8 +121,6 @@ public class StatsManager {
     }
 
 
-
-
     public void addKill(Player p, Player killed, int arenaid){
         PlayerStatsSession s = arenas.get(arenaid).get(p);
 
@@ -116,8 +134,89 @@ public class StatsManager {
             }
         }
     }
-
-    public void saveGame(int arenaid, Player winner,int players, long time ){
+   
+    
+    public void saveGame(int arenaID, Player winner, int playerCount, long gameLength) {
+    	if (enabled) {
+    		int gameNum = 0;
+    		Game game = GameManager.getInstance().getGame(arenaID);
+    		String gameQuery = "SELECT * FROM `sg_gamestats` ORDER BY `gameno` DESC LIMIT 1)";
+    		String insertQuery = "INSERT INTO 	sg_gamestats` VALUES(NULL, " + arenaID + ", " + playerCount + ", " + winner.getName() + ", " + gameLength + ")";
+    				    		
+    		try {
+    			long respondTime = new Date().getTime();
+    			PreparedStatement statement = dbman.createStatement(gameQuery);
+    			
+    			ResultSet results = statement.executeQuery();
+    			results.next();
+    			
+    			gameNum = results.getInt(1) + 1;
+    			if (respondTime + 5000 < new Date().getTime()) {
+    				System.out.println("Database timeout. Check connection between server and database.");
+    			}
+    		} catch (SQLException except) {
+    			except.printStackTrace();
+    			game.setRBStatus("Error: getno");
+    		}
+    		
+    		addSQL(insertQuery);
+    		
+    		
+    		for (PlayerStatsSession stats:arenas.get(arenaID).values()) {
+    			stats.setGameID(gameNum);
+    			stats.getPlayerName();
+    			String pName = stats.getPlayerName();
+    			String search = "SELECT * FROM `sg_playerstats` WHERE `player` LIKE '" + pName + "'";
+    			
+    			try {
+	    			PreparedStatement searchPlayer = dbman.createStatement(search);
+	    			ResultSet searchResult = searchPlayer.executeQuery();
+	    			
+	    			if (searchResult.next()) {
+	    				int points = searchResult.getInt("points") + stats.getPoints();
+	    				int kills = searchResult.getInt("kills") + stats.getKills();
+	    				int deaths = searchResult.getInt("death") + stats.getDeaths();
+	    				int wins = searchResult.getInt("wins");
+	    				if (stats.getPosition() == 1) {
+	    					wins++;
+	    				}
+	    				
+	    				String queryPoints = "UPDATE SET `points`=" + points + ",";
+	    				String queryWins = "`wins`=" + wins + ",";
+	    				String queryKills = "`kills`=" + kills + ",";
+	    				String queryDeaths = "`death`=" + deaths + " ";
+	    				String queryPlayer = "WHERE `name`=" + pName;
+	    				String querySend = queryPoints + queryWins + queryKills + queryDeaths + queryPlayer;
+	    				
+	    				addSQL(querySend);
+	    			} else {
+	    				int points = stats.getPoints();
+	    				int kills = stats.getKills();
+	    				int deaths = stats.getDeaths();
+	    				int wins = 0;
+	    				if (stats.getPosition() == 1) {
+	    					wins++;
+	    				}
+	    				
+	    				String queryInsert = "INSERT INTO `sg_playerstats`(`player`, `points`, `wins`, `kills`, `death`) ";
+	    				String queryValues = "VALUES (" + pName + "," + points + "," + wins + "," + kills + "," + deaths + ")";
+	    				String querySend = queryInsert + queryValues;
+	    				
+	    				addSQL(querySend);
+	    			}
+	    			
+    			} catch (SQLException except) {
+    				except.printStackTrace();
+    			}
+    			
+    		}
+    		
+    		arenas.get(arenaID).clear();
+    	}
+    }
+    
+   
+    /*public void saveGame(int arenaid, Player winner, int players, long time ){
         if(!enabled)return;
         int gameno = 0;
         Game g = GameManager.getInstance().getGame(arenaid);
@@ -146,13 +245,7 @@ public class StatsManager {
         arenas.get(arenaid).clear();
 
 
-    }
-
-
-
-
-
-
+    }*/
 
 
     private void addSQL(String query){
@@ -175,19 +268,9 @@ public class StatsManager {
                 PreparedStatement s = queue.remove(0);
                 try{
 
-
                     s.execute();
                 }catch(Exception e){     dbman.connect();}
-
             }
         }
     }
-
-
-
-
-
-
-
-
 }
