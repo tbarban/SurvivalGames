@@ -429,6 +429,8 @@ public class Game {
 		} else {
 			startTime = new Date().getTime();
 			for (Player pl: activePlayers) {
+				pl.setFoodLevel(20);
+				pl.setExhaustion(0);
 				pl.setHealth(pl.getMaxHealth());
 				//clearInv(pl);
 				msgmgr.sendFMessage(PrefixType.INFO, "game.goodluck", pl);
@@ -703,7 +705,6 @@ public class Game {
 		sm.playerWin(win, gameID, new Date().getTime() - startTime);
 		sm.saveGame(gameID, win, getActivePlayers() + getInactivePlayers(), new Date().getTime() - startTime);
 		
-		sm.updateStats();
 
 		activePlayers.clear();
 		inactivePlayers.clear();

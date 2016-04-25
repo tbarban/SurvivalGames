@@ -140,13 +140,11 @@ public class StatsManager {
     @SuppressWarnings("unused")
 	public void saveGame(int arenaID, Player winner, int playerCount, long gameLength) {
     	if (enabled) {
-    		Bukkit.broadcastMessage("Stats saving is enabled");
     		int gameNum = 0;
     		Game game = GameManager.getInstance().getGame(arenaID);    		
     		try {
     			String gameQuery = "SELECT * FROM `sg_gamestats` ORDER BY `gameno` DESC LIMIT 1";
         		String insertQuery = "INSERT INTO `sg_gamestats` VALUES(NULL, " + arenaID + ", " + playerCount + ", " + winner.getName() + ", " + gameLength + ")";
-        		Bukkit.broadcastMessage("Trying to connect");
 
     			long respondTime = new Date().getTime();
     			PreparedStatement statement = dbman.createStatement(gameQuery);
@@ -155,15 +153,14 @@ public class StatsManager {
     			results.next();
     			
     			//gameNum = results.getInt(1) + 1;
-    			Bukkit.broadcastMessage("Connect success");
     			if (respondTime + 5000 < new Date().getTime()) {
     				System.out.println("Database timeout. Check connection between server and database.");
-    				Bukkit.broadcastMessage("Connect failed");
     				
     			}
+    			PreparedStatement toInsert = dbman.createStatement(insertQuery);
+    			addSQL(toInsert);
     			
-    			addSQL(insertQuery);
-    			Bukkit.broadcastMessage("Should have saved game stats");
+    			Bukkit.broadcastMessage("Added game stats to query");
     		} catch (SQLException except) {
     			except.printStackTrace();
     			game.setRBStatus("Error: getno");
@@ -176,11 +173,12 @@ public class StatsManager {
     		for (PlayerStatsSession stats:arenas.get(arenaID).values()) {
     			String pName = stats.getPlayerName();
     			String search = "SELECT * FROM `sg_playerstats` WHERE `player` = '" + pName + "'";
+    			System.out.println(search);
     			
     			try {
 	    			PreparedStatement searchPlayer = dbman.createStatement(search);
 	    			ResultSet searchResult = searchPlayer.executeQuery();
-	    			Bukkit.broadcastMessage("Searched for " + pName);
+	    			Bukkit.broadcastMessage("Searching for " + pName);
 
 	    			if (searchResult.next()) {
 	    				int points = searchResult.getInt("points") + stats.getPoints();
@@ -196,10 +194,12 @@ public class StatsManager {
 	    				String queryDeaths = "`death`=" + deaths + " ";
 	    				String queryPlayer = "WHERE `player`='" + pName + "'";
 	    				String querySend = queryPoints + queryWins + queryKills + queryDeaths + queryPlayer;
+	    				System.out.println(querySend);
 	    				
+	    				PreparedStatement toSend = dbman.createStatement(querySend);
+	    				addSQL(toSend);
 	    				
-	    				addSQL(querySend);
-		    			Bukkit.broadcastMessage("Should have updated stats for " + pName);
+		    			Bukkit.broadcastMessage("Updated stats for " + pName);
 
 	    				
 	    			} else {
@@ -211,12 +211,16 @@ public class StatsManager {
 	    					wins++;
 	    				}
 	    				
-	    				String queryInsert = "INSERT INTO `sg_playerstats`(`player`, `points`, `wins`, `kills`, `death`) ";
-	    				String queryValues = "VALUES (" + pName + "," + points + "," + wins + "," + kills + "," + deaths + ")";
+	    				String queryInsert = "INSERT INTO `sg_playerstats` (`player`, `points`, `wins`, `kills`, `death`) ";
+	    				String queryValues = "VALUES(\"" + pName + "\"," + points + "," + wins + "," + kills + "," + deaths + ")";
 	    				String querySend = queryInsert + queryValues;
+	    				System.out.println(querySend);
+
 	    				
-	    				addSQL(querySend);
-		    			Bukkit.broadcastMessage("Should have created stats for " + pName);
+	    				PreparedStatement toSend = dbman.createStatement(querySend);
+	    				addSQL(toSend);
+	    			
+		    			Bukkit.broadcastMessage("Created stats for " + pName);
 	    				
 	    			}
 	    			
@@ -263,9 +267,9 @@ public class StatsManager {
     }*/
 
 
-    private void addSQL(String query){
+    /*private void addSQL(String query){
         addSQL( dbman.createStatement(query));
-    }
+    }*/
 
     private void addSQL(PreparedStatement s){
         queue.add(s);
@@ -275,19 +279,21 @@ public class StatsManager {
         }
     }
     
-    public void updateStats() {
+   /* public void updateStats() {
     	toRun = queue;
     	try {
     		dbman.connect();
+    		Bukkit.broadcastMessage("Connected to DB");
     		for (PreparedStatement s : toRun) {
-    			s.execute();
+    			s.executeUpdate();
+    			Bukkit.broadcastMessage("Ran SQL query");
     		}
     	} catch(Exception e) {
     		e.printStackTrace();
     	}
     	
     	toRun.clear();
-    }
+    }*/
 
 
     class DatabaseDumper extends Thread {
@@ -296,8 +302,8 @@ public class StatsManager {
             while(queue.size()>0){
                 PreparedStatement s = queue.remove(0);
                 try{
-
-                    s.execute();
+                    s.executeUpdate();
+                    s.close();
                 }catch(Exception e){     dbman.connect();}
             }
         }
