@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.mcsg.survivalgames.Game;
@@ -160,7 +159,6 @@ public class StatsManager {
     			PreparedStatement toInsert = dbman.createStatement(insertQuery);
     			addSQL(toInsert);
     			
-    			Bukkit.broadcastMessage("Added game stats to query");
     		} catch (SQLException except) {
     			except.printStackTrace();
     			game.setRBStatus("Error: getno");
@@ -168,17 +166,13 @@ public class StatsManager {
     		
     		
     		
-
-    		
     		for (PlayerStatsSession stats:arenas.get(arenaID).values()) {
     			String pName = stats.getPlayerName();
     			String search = "SELECT * FROM `sg_playerstats` WHERE `player` = '" + pName + "'";
-    			System.out.println(search);
-    			
+
     			try {
 	    			PreparedStatement searchPlayer = dbman.createStatement(search);
 	    			ResultSet searchResult = searchPlayer.executeQuery();
-	    			Bukkit.broadcastMessage("Searching for " + pName);
 
 	    			if (searchResult.next()) {
 	    				int points = searchResult.getInt("points") + stats.getPoints();
@@ -194,12 +188,10 @@ public class StatsManager {
 	    				String queryDeaths = "`death`=" + deaths + " ";
 	    				String queryPlayer = "WHERE `player`='" + pName + "'";
 	    				String querySend = queryPoints + queryWins + queryKills + queryDeaths + queryPlayer;
-	    				System.out.println(querySend);
 	    				
 	    				PreparedStatement toSend = dbman.createStatement(querySend);
 	    				addSQL(toSend);
 	    				
-		    			Bukkit.broadcastMessage("Updated stats for " + pName);
 
 	    				
 	    			} else {
@@ -214,13 +206,9 @@ public class StatsManager {
 	    				String queryInsert = "INSERT INTO `sg_playerstats` (`player`, `points`, `wins`, `kills`, `death`) ";
 	    				String queryValues = "VALUES(\"" + pName + "\"," + points + "," + wins + "," + kills + "," + deaths + ")";
 	    				String querySend = queryInsert + queryValues;
-	    				System.out.println(querySend);
 
-	    				
 	    				PreparedStatement toSend = dbman.createStatement(querySend);
 	    				addSQL(toSend);
-	    			
-		    			Bukkit.broadcastMessage("Created stats for " + pName);
 	    				
 	    			}
 	    			
@@ -233,43 +221,6 @@ public class StatsManager {
     		arenas.get(arenaID).clear();
     	}
     }
-    
-   
-    /*public void saveGame(int arenaid, Player winner, int players, long time ){
-        if(!enabled)return;
-        int gameno = 0;
-        Game g = GameManager.getInstance().getGame(arenaid);
-
-        try {
-            long time1 = new Date().getTime();
-            PreparedStatement s2 = dbman.createStatement("SELECT * FROM "+SettingsManager.getSqlPrefix() + 
-                    "gamestats ORDER BY gameno DESC LIMIT 1");
-            ResultSet rs = s2.executeQuery();
-            rs.next();
-            gameno = rs.getInt(1) + 1;
-
-            if(time1 + 5000 < new Date().getTime())System.out.println("Your database took a long time to respond. Check the connection between the server and database");
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            g.setRBStatus("Error: getno");
-        }
-
-        addSQL("INSERT INTO "+SettingsManager.getSqlPrefix()+"gamestats VALUES(NULL,"+arenaid+","+players+",'"+winner.getName()+"',"+time+")");
-
-        for(PlayerStatsSession s:arenas.get(arenaid).values()){
-            s.setGameID(gameno);
-            addSQL(s.createQuery());
-        }
-        arenas.get(arenaid).clear();
-
-
-    }*/
-
-
-    /*private void addSQL(String query){
-        addSQL( dbman.createStatement(query));
-    }*/
 
     private void addSQL(PreparedStatement s){
         queue.add(s);
@@ -279,23 +230,6 @@ public class StatsManager {
         }
     }
     
-   /* public void updateStats() {
-    	toRun = queue;
-    	try {
-    		dbman.connect();
-    		Bukkit.broadcastMessage("Connected to DB");
-    		for (PreparedStatement s : toRun) {
-    			s.executeUpdate();
-    			Bukkit.broadcastMessage("Ran SQL query");
-    		}
-    	} catch(Exception e) {
-    		e.printStackTrace();
-    	}
-    	
-    	toRun.clear();
-    }*/
-
-
     class DatabaseDumper extends Thread {
 
         public void run(){

@@ -30,7 +30,7 @@ import org.mcsg.survivalgames.stats.StatsManager;
 import org.mcsg.survivalgames.util.ItemReader;
 import org.mcsg.survivalgames.util.Kit;
 
-
+import me.winterguardian.easyscoreboards.ScoreboardUtil;
 import net.milkbowl.vault.economy.Economy;
 
 
@@ -428,7 +428,12 @@ public class Game {
 			return;
 		} else {
 			startTime = new Date().getTime();
+			
+			String[] scoreboardInfo = {ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "--- Survival Games ---", " ", ChatColor.GOLD + "Tributes: " + ChatColor.GREEN + activePlayers.size()};
 			for (Player pl: activePlayers) {
+				ScoreboardUtil.unrankedSidebarDisplay(pl, scoreboardInfo);
+				
+				
 				pl.setFoodLevel(20);
 				pl.setExhaustion(0);
 				pl.setHealth(pl.getMaxHealth());
@@ -526,6 +531,7 @@ public class Game {
 
 	@SuppressWarnings("unused")
 	public void removePlayer(Player p, boolean b) {
+		
 		p.teleport(SettingsManager.getInstance().getLobbySpawn());
 		///$("Teleporting to lobby");
 		if (mode == GameMode.INGAME) {
@@ -536,11 +542,20 @@ public class Game {
 			restoreInv(p);
 			activePlayers.remove(p);
 			inactivePlayers.remove(p);
+			
+			String[] scoreboardInfo = {ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "--- Survival Games ---", " ", ChatColor.GOLD + "Tributes: " + ChatColor.GREEN  + activePlayers.size()};
+			
+			for (Player pl : activePlayers) {
+				ScoreboardUtil.unrankedSidebarDisplay(pl, scoreboardInfo);
+			}
+			
 			for (Object in : spawns.keySet().toArray()) {
 				if (spawns.get(in) == p) spawns.remove(in);
 			}
 			LobbyManager.getInstance().clearSigns(gameID);
 		}
+		
+		p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
 		HookManager.getInstance().runHook("PLAYER_REMOVED", "player-"+p.getName());
 
@@ -565,6 +580,7 @@ public class Game {
 	 */
 	@SuppressWarnings("deprecation")
 	public void killPlayer(Player p, boolean left) {
+		p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 		try{
 			clearInv(p);
 			if (!left) {
@@ -577,6 +593,13 @@ public class Game {
 
 			activePlayers.remove(p);
 			inactivePlayers.add(p);
+			
+			String[] scoreboardInfo = {ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "--- Survival Games ---", " ", ChatColor.GOLD + "Tributes: " + ChatColor.GREEN + activePlayers.size()};
+			
+			for (Player pl : activePlayers) {
+				ScoreboardUtil.unrankedSidebarDisplay(pl, scoreboardInfo);
+			}
+			
 			PlayerKilledEvent pk = null;
 			if (left) {
 				msgFall(PrefixType.INFO, "game.playerleavegame","player-"+p.getName() );
@@ -685,6 +708,7 @@ public class Game {
 		
 		win.sendMessage(ChatColor.GOLD + "[" + ChatColor.DARK_RED + ChatColor.BOLD + "SG" + ChatColor.GOLD + "] You've been awarded $" + (int)getWinAmount(activePlayers, inactivePlayers) + " for winning the Survival Games!");	
 	
+		win.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 		
 		win.teleport(SettingsManager.getInstance().getLobbySpawn());
 		
